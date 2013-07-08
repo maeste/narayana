@@ -160,6 +160,13 @@
       <version>${version.com.h2database}</version>
       <scope>test</scope>
     </dependency>
+      <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>ojdbc</artifactId>
+        <version>${version.com.oracle}</version>
+        <scope>system</scope>
+        <systemPath>${orson.jar.location}/../qa/dbdrivers/oracle_10_2_0_4/ojdbc14.jar</systemPath>
+      </dependency>
   </dependencies>
   <profiles>
       <profile>
