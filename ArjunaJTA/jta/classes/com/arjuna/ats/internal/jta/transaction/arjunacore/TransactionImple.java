@@ -31,6 +31,8 @@
 
 package com.arjuna.ats.internal.jta.transaction.arjunacore;
 
+import io.narayana.orderedresource.FirstResource;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -53,6 +55,7 @@ import com.arjuna.ats.arjuna.coordinator.BasicAction;
 import com.arjuna.ats.arjuna.coordinator.TransactionReaper;
 import com.arjuna.ats.arjuna.exceptions.ObjectStoreException;
 import com.arjuna.ats.internal.arjuna.abstractrecords.LastResourceRecord;
+import com.arjuna.ats.internal.jta.resources.arjunacore.FirstResourceRecord;
 import com.arjuna.ats.internal.jta.resources.arjunacore.SynchronizationImple;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAOnePhaseResource;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord;
@@ -769,7 +772,10 @@ public class TransactionImple implements javax.transaction.Transaction,
     private AbstractRecord createRecord(XAResource xaRes, Object[] params, Xid xid)
     {
         final AbstractRecord record;
-        if ((xaRes instanceof LastResourceCommitOptimisation)
+        if (xaRes instanceof FirstResource) {
+            record = new FirstResourceRecord(this, ((FirstResource)xaRes), xid);
+        }
+        else if ((xaRes instanceof LastResourceCommitOptimisation)
                 || ((LAST_RESOURCE_OPTIMISATION_INTERFACE != null) && LAST_RESOURCE_OPTIMISATION_INTERFACE
                 .isInstance(xaRes)))
         {

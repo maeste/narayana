@@ -160,6 +160,14 @@
       <version>${version.com.h2database}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.sybase.jdbcx</groupId>
+      <artifactId>jconn4</artifactId>
+      <version>jConnect-7_0</version>
+      <scope>test</scope>
+        <!--  ${orson.jar.location}/../qa/dbdrivers/oracle_10_2_0_4/ojdbc14.jar -->
+        <!-- systemPath>${project.basedir}/jconn4.jar</systemPath> -->
+    </dependency>
   </dependencies>
   <profiles>
       <profile>
