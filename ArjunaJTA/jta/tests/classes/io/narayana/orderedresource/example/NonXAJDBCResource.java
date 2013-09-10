@@ -8,11 +8,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import javax.sql.DataSource;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.internal.jta.xa.XID;
 import com.arjuna.ats.jta.xa.XidImple;
 
@@ -20,42 +20,56 @@ import com.arjuna.ats.jta.xa.XidImple;
  * This class will stores the Xid of the resource manager in a Narayana table in
  * the resource manager.
  */
-public class SimpleFirstResource implements FirstResource, XAResource {
+public class NonXAJDBCResource implements FirstResource {
 
 	private Connection connection;
 	private Xid startedXid;
 
-	public SimpleFirstResource(DataSource dataSource) throws SQLException {
-
-		connection = dataSource.getConnection();
-		connection.setAutoCommit(false);
+	public NonXAJDBCResource(Connection connection) throws SQLException {
+		this.connection = connection;
 	}
 
+	/**
+	 * create table xids (xid varbinary(255), transactionManagerID varchar(255))
+	 * sp_configure "lock scheme",0,datarows
+	 */
 	@Override
-	public void associateBranchIdentifier(Xid xid) throws Exception {
-		PreparedStatement prepareStatement = connection
-				.prepareStatement("insert into xids (xid) values (?)");
+	public int prepare(Xid xid) throws XAException {
+		try {
+			PreparedStatement prepareStatement = connection
+					.prepareStatement("insert into xids (xid, transactionManagerID) values (?,?)");
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		DataOutputStream dos = new DataOutputStream(baos);
-		XID toSave = ((XidImple) xid).getXID();
-		dos.writeInt(toSave.formatID);
-		dos.writeInt(toSave.gtrid_length);
-		dos.writeInt(toSave.bqual_length);
-		dos.writeInt(toSave.data.length);
-		dos.write(toSave.data);
-		dos.flush();
-		prepareStatement.setBytes(1, baos.toByteArray());
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos);
+			XID toSave = ((XidImple) xid).getXID();
+			dos.writeInt(toSave.formatID);
+			dos.writeInt(toSave.gtrid_length);
+			dos.writeInt(toSave.bqual_length);
+			dos.writeInt(toSave.data.length);
+			dos.write(toSave.data);
+			dos.flush();
+			prepareStatement.setBytes(1, baos.toByteArray());
+			prepareStatement.setString(2, TxControl.getXANodeName());
 
-		if (prepareStatement.executeUpdate() != 1) {
-			System.err.println("Update was not successful");
+			if (prepareStatement.executeUpdate() != 1) {
+				System.err.println("Update was not successful");
+			}
+
+			System.out.println("prepared");
+
+			return XAResource.XA_OK;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return XAException.XAER_RMERR;
 		}
 	}
 
 	@Override
 	public void commit(Xid arg0, boolean arg1) throws XAException {
 		try {
+			System.out.println("committing");
 			connection.commit();
+			System.out.println("committed");
 		} catch (SQLException e) {
 			throw new XAException(e.getMessage());
 		}
@@ -68,11 +82,6 @@ public class SimpleFirstResource implements FirstResource, XAResource {
 		} catch (SQLException e) {
 			throw new XAException(e.getMessage());
 		}
-	}
-
-	@Override
-	public int prepare(Xid arg0) throws XAException {
-		return 0;
 	}
 
 	@Override
@@ -114,12 +123,5 @@ public class SimpleFirstResource implements FirstResource, XAResource {
 	 */
 	public Xid getStartedXid() {
 		return startedXid;
-	}
-
-	/**
-	 * Test code - ignore
-	 */
-	public Connection getConnection() {
-		return connection;
 	}
 }

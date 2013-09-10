@@ -22,27 +22,12 @@
 
 package io.narayana.orderedresource;
 
-import javax.transaction.xa.Xid;
+import javax.transaction.xa.XAResource;
 
 /**
  * This interface allows 1PC resources to sequence themselves in the correct
  * order for the transaction manager to support avoiding requiring a heuristic
  * outcome during second phase failure.
  */
-public interface FirstResource {
-
-	/**
-	 * This will ensure that the resource manager has included a globally unique
-	 * identifier for its branch in the same scope as the users business logic.
-	 * This xid must be persisted in the same transactional scope as the users
-	 * business logic.
-	 * 
-	 * It will be called during the prepare phase of the 2PC transaction prior
-	 * to the transaction manager storing its transaction log.
-	 * 
-	 * @param xid
-	 *            The transaction branch for this resource manager
-	 * @throws Exception
-	 */
-	public void associateBranchIdentifier(Xid xid) throws Exception;
+public interface FirstResource extends XAResource {
 }

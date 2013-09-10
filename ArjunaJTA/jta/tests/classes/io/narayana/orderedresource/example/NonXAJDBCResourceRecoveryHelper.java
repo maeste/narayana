@@ -1,7 +1,5 @@
 package io.narayana.orderedresource.example;
 
-import io.narayana.orderedresource.RecoveryHelper;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -16,6 +14,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.transaction.xa.Xid;
 
+import com.arjuna.ats.arjuna.coordinator.TxControl;
 import com.arjuna.ats.internal.jta.xa.XID;
 import com.arjuna.ats.jta.xa.XidImple;
 
@@ -23,18 +22,19 @@ import com.arjuna.ats.jta.xa.XidImple;
  * This class connects to the resource manager to query which branches have
  * committed.
  */
-public class SimpleRecoveryHelper implements RecoveryHelper {
+public class NonXAJDBCResourceRecoveryHelper {
 	private Connection connection;
 
-	public SimpleRecoveryHelper(DataSource dataSource) throws SQLException {
+	public NonXAJDBCResourceRecoveryHelper(DataSource dataSource)
+			throws SQLException {
 		connection = dataSource.getConnection();
 	}
 
-	@Override
 	public Xid[] listCommittedBranches() {
 		try {
 			ResultSet rs = connection.createStatement().executeQuery(
-					"SELECT * from xids");
+					"SELECT * from xids where transactionManagerID = \'"
+							+ TxControl.getXANodeName() + "\'");
 			List<Xid> xids = new ArrayList<Xid>();
 			while (rs.next()) {
 				byte[] read = rs.getBytes(1);
@@ -51,14 +51,16 @@ public class SimpleRecoveryHelper implements RecoveryHelper {
 				XidImple xid = new XidImple(_theXid);
 
 				xids.add(xid);
+
+				System.out.println("read: " + xid);
 			}
+			System.out.println("listCommittedBranches");
 			return xids.toArray(new Xid[0]);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	@Override
 	public void garbageCollect(Xid[] xids) {
 		try {
 			StringBuffer buffer = new StringBuffer();

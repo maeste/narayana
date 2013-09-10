@@ -773,7 +773,7 @@ public class TransactionImple implements javax.transaction.Transaction,
     {
         final AbstractRecord record;
         if (xaRes instanceof FirstResource) {
-            record = new FirstResourceRecord(this, ((FirstResource)xaRes), xid);
+            record = new FirstResourceRecord(this, xaRes, xid);
         }
         else if ((xaRes instanceof LastResourceCommitOptimisation)
                 || ((LAST_RESOURCE_OPTIMISATION_INTERFACE != null) && LAST_RESOURCE_OPTIMISATION_INTERFACE

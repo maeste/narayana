@@ -30,8 +30,6 @@
 
 package com.arjuna.ats.internal.jta.resources.arjunacore;
 
-import io.narayana.orderedresource.FirstResource;
-
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
@@ -45,15 +43,13 @@ import com.arjuna.ats.jta.logging.jtaLogger;
 
 public class FirstResourceRecord extends AbstractRecord {
 	private static final Uid START_XARESOURCE = Uid.minUid();
-	private FirstResource firstResource;
 	private Xid xid;
 	private XAResource xaResource;
 
-	public FirstResourceRecord(TransactionImple tx, FirstResource res, Xid xid) {
+	public FirstResourceRecord(TransactionImple tx, XAResource res, Xid xid) {
 		super(new Uid(), null, ObjectType.ANDPERSISTENT);
 
-		firstResource = res;
-		xaResource = (XAResource) res;
+		xaResource = res;
 		this.xid = xid;
 	}
 
@@ -71,7 +67,7 @@ public class FirstResourceRecord extends AbstractRecord {
 
 	public int topLevelPrepare() {
 		try {
-			firstResource.associateBranchIdentifier(xid);
+			xaResource.prepare(xid);
 			return TwoPhaseOutcome.PREPARE_OK;
 		} catch (Exception e) {
 			return TwoPhaseOutcome.PREPARE_NOTOK;
@@ -124,7 +120,7 @@ public class FirstResourceRecord extends AbstractRecord {
 	}
 
 	public Object value() {
-		return firstResource;
+		return xaResource;
 	}
 
 	public void setValue(Object o) {
