@@ -172,6 +172,58 @@
       <version>${version.com.h2database}</version>
       <scope>test</scope>
     </dependency>
+	<dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${version.com.h2database}</version>
+      <scope>test</scope>
+    </dependency>
+        <dependency>
+        <groupId>com.ibm</groupId>
+        <artifactId>db2jcc</artifactId>
+        <version>${version.com.ibm}</version>
+        <scope>system</scope>
+        <systemPath>${orson.jar.location}/../qa/dbdrivers/DB2_v9.7/db2jcc.jar</systemPath>
+    </dependency>
+    <dependency>
+        <groupId>com.microsoft.sqlserver</groupId>
+        <artifactId>sqljdbc4</artifactId>
+        <version>${version.com.microsoft.sqlserver}</version>
+        <systemPath>${orson.jar.location}/../qa/dbdrivers/mssql2005_sqljdbc_2.0/enu/sqljdbc4.jar</systemPath>
+        <scope>system</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sybase.jdbcx</groupId>
+      <artifactId>jconn4</artifactId>
+      <version>jConnect-7_0</version>
+        <systemPath>${orson.jar.location}/../qa/dbdrivers/jConnect-6_0/classes/jconn3.jar</systemPath>
+      <scope>system</scope>
+    </dependency>	
+	<dependency>
+         <groupId>com.oracle</groupId>
+         <artifactId>ojdbc</artifactId>
+         <version>${version.com.oracle}</version>
+        <systemPath>${orson.jar.location}/../qa/dbdrivers/oracle_10_2_0_4/ojdbc14.jar</systemPath>
+         <scope>system</scope>
+    </dependency>
+	<dependency>
+		<groupId>postgresql</groupId>
+		<artifactId>postgresql</artifactId>
+		<version>${version.postgresql}</version>
+		<scope>test</scope>
+	</dependency>
+    <dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>${version.mysql}</version>
+		<scope>test</scope>
+	</dependency>	
+	<dependency>
+       	<groupId>jboss</groupId>
+		<artifactId>jnpserver</artifactId>
+		<version>4.2.2.GA</version>
+		<scope>test</scope>
+    </dependency>
   </dependencies>
   <profiles>
       <profile>
