@@ -29,26 +29,35 @@ import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 
 public class TestCommitMarkableResourceBase {
 
-	private NamingBeanImpl namingBeanImpl;
+	private NamingBeanImpl namingBeanImpl = null;
 
 	private String resetPropertiesFile;
 
 	protected RecoveryManager manager;
 
-	@Before
+    private static boolean inAS = true;
+
+    public static void setInAS(boolean inAS) {
+        TestConnectableResourceBase.inAS = inAS;
+    }
+
+    @Before
 	public final void setup() throws Exception {
 
-		File file = new File(System.getProperty("user.dir") + "/ObjectStore");
-		if (file.exists()) {
-			Utils.removeRecursive(file.toPath());
-		}
+        if (inAS)
+            return;
 
-		System.setProperty("java.naming.factory.initial",
-				"org.jnp.interfaces.NamingContextFactory");
-		System.setProperty("java.naming.factory.url.pkgs",
-				"org.jboss.naming:org.jnp.interfaces");
-		namingBeanImpl = new NamingBeanImpl();
-		namingBeanImpl.start();
+        File file = new File(System.getProperty("user.dir") + "/ObjectStore");
+        if (file.exists()) {
+            Utils.removeRecursive(file.toPath());
+        }
+
+        System.setProperty("java.naming.factory.initial",
+                "org.jnp.interfaces.NamingContextFactory");
+        System.setProperty("java.naming.factory.url.pkgs",
+                "org.jboss.naming:org.jnp.interfaces");
+        namingBeanImpl = new NamingBeanImpl();
+        namingBeanImpl.start();
 
 		resetPropertiesFile = System
 				.getProperty("com.arjuna.ats.arjuna.common.propertiesFile");
@@ -61,7 +70,12 @@ public class TestCommitMarkableResourceBase {
 
 	@After
 	public final void tearDown() {
-		namingBeanImpl.stop();
+        if (inAS)
+            return;
+
+        namingBeanImpl.stop();
+        namingBeanImpl = null;
+
 		if (resetPropertiesFile != null) {
 			System.setProperty("com.arjuna.ats.arjuna.common.propertiesFile",
 					resetPropertiesFile);
