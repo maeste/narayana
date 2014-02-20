@@ -39,7 +39,6 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import com.arjuna.ats.arjuna.recovery.RecoveryModule;
 import com.arjuna.ats.internal.jta.recovery.arjunacore.CommitMarkableResourceRecordRecoveryModule;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class TestCommitMarkableResource extends TestCommitMarkableResourceBase {
 	// @Ignore
@@ -61,18 +60,6 @@ public class TestCommitMarkableResource extends TestCommitMarkableResourceBase {
 		dataSource.setPassword("sa");
 		dataSource.setServerName("localhost");
 		dataSource.setDatabaseName("commitmarkableresource");
-
-		doTest(dataSource);
-	}
-
-	@Ignore
-	@Test
-	public void testMysql() throws Exception {
-		MysqlDataSource dataSource = new MysqlDataSource();
-		dataSource.setPortNumber(3306);
-		dataSource.setDatabaseName("commitmarkableresource");
-		dataSource.setUser("sa");
-		dataSource.setPassword("sa");
 
 		doTest(dataSource);
 	}

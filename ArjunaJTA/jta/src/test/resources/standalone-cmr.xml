@@ -395,9 +395,4 @@
         </outbound-socket-binding>
     </socket-binding-group>
 
-    <deployments>
-        <deployment name="test.war" runtime-name="test.war">
-            <content sha1="ed4ca5ee9825b85f31df434945df6d43260b3e57"/>
-        </deployment>
-    </deployments>
 </server>
