@@ -76,7 +76,7 @@ import com.sybase.jdbc3.jdbc.SybXADataSource;
 public class PerformanceTestCommitMarkableResource extends
 		TestCommitMarkableResourceBase {
 	private int threadCount = 10;
-	private int iterationCount = 10;
+	private int iterationCount = 500;
 	private int waiting;
 	private boolean go;
 	private final Object waitLock = new Object();
