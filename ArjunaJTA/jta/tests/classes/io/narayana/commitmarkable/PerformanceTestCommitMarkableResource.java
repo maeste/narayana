@@ -183,6 +183,12 @@ public class PerformanceTestCommitMarkableResource extends
 			((PGSimpleDataSource) recoveryDataSource)
 					.setDatabaseName("jbossts");
 		} else if (dbType.equals("mysql")) {
+			// com.mysql.jdbc.PacketTooBigException: Packet for query is too
+			// large (1318148 > 1048576). You can change this value on the
+			// server by setting the max_allowed_packet' variable
+			BeanPopulator.getDefaultInstance(JTAEnvironmentBean.class)
+					.setCommitMarkableResourceRecordDeleteBatchSize(5000);
+
 			dataSource = new MysqlConnectionPoolDataSource();
 			// need paranoid as otherwise it sends a connection change user
 			((MysqlConnectionPoolDataSource) dataSource)
