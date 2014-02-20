@@ -35,7 +35,7 @@ public class TestCommitMarkableResourceBase {
 
 	protected RecoveryManager manager;
 
-	private static boolean inAS = true;
+	private static boolean inAS = false;
 
 	public static void setInAS(boolean inAS) {
 		TestCommitMarkableResourceBase.inAS = inAS;

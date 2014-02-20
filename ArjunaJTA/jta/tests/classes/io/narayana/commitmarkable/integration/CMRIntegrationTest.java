@@ -20,7 +20,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import io.narayana.commitmarkable.DummyXAResource;
 import io.narayana.commitmarkable.JDBCConnectableResource;
-import io.narayana.commitmarkable.PerformanceTestCommitMarkableResource;
 import io.narayana.commitmarkable.TestCommitMarkableResource;
 import io.narayana.commitmarkable.TestCommitMarkableResourceBase;
 import io.narayana.commitmarkable.Utils;
@@ -76,9 +75,8 @@ public class CMRIntegrationTest {
 				.addClasses(DummyXAResource.class,
 						TestCommitMarkableResource.class,
 						TestCommitMarkableResourceBase.class,
-						JDBCConnectableResource.class,
-						PerformanceTestCommitMarkableResource.class,
-						Utils.class, JdbcDataSource.class)
+						JDBCConnectableResource.class, Utils.class,
+						JdbcDataSource.class)
 				.addPackage("io.narayana.connectableresource")
 				.addAsManifestResource(new StringAsset(DEPENDENCIES),
 						"MANIFEST.MF")
@@ -131,8 +129,8 @@ public class CMRIntegrationTest {
 		}
 	}
 
-	private int threadCount = 1;
-	private int iterationCount = 20;
+	private int threadCount = 100;
+	private int iterationCount = 2000;
 	private int waiting;
 	private boolean go;
 	private final Object waitLock = new Object();
